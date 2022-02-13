@@ -5,39 +5,31 @@ import android.os.Bundle
 import android.util.Log
 import com.example.mpv_kotlin_based.model.CountriesService
 import com.example.mpv_kotlin_based.model.CountryModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mCompositeDisposable: CompositeDisposable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mCompositeDisposable = CompositeDisposable()
+        CountriesService().getCountries().enqueue(object : Callback<List<CountryModel>> {
+            override fun onResponse(
+                call: Call<List<CountryModel>>,
+                response: Response<List<CountryModel>>
+            ) {
+                val list: List<CountryModel>? = response.body()
+                for (index in 0..(list!!.size - 1)) {
+                    Log.d("Req onResponse", ""+list[index].countryDate)
+                }
+            }
 
-        mCompositeDisposable.add(CountriesService().getCountries()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::onResponse, this::onError))
+            override fun onFailure(call: Call<List<CountryModel>>, t: Throwable) {
+                Log.d("Req onFailure", "")
+            }
+
+        })
+
     }
-
-    private fun onResponse(countryModelList: List<CountryModel>) {
-        for (index in 0..(countryModelList.size - 1)) {
-            Log.d("Req Success", ""+countryModelList[index].countryID)
-        }
-    }
-
-    private fun onError(error: Throwable) {
-        Log.d("Req Fail", ""+error.toString())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (this::mCompositeDisposable.isInitialized) {
-            mCompositeDisposable.clear()
-        }
-    }
-
 }
