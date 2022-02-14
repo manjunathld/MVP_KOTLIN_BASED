@@ -1,5 +1,6 @@
 package com.example.mpv_kotlin_based.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,11 @@ class CountriesAdapter(listCountriesModel: List<CountryModel>) :
     private val localListCountriesModel : List<CountryModel> = listCountriesModel
 
     class CountriesViewHolder(countryItemView: View) : RecyclerView.ViewHolder(countryItemView) {
-        private lateinit var tvCountryCode: TextView
-        private lateinit var tvCountryName: TextView
-        private lateinit var tvCountryDate: TextView
+        private val tvCountryCode: TextView = countryItemView.findViewById(R.id.tv_CountryCode)
+        private val tvCountryName: TextView = countryItemView.findViewById(R.id.tv_CountryName)
+        private val tvCountryDate: TextView = countryItemView.findViewById(R.id.tv_CountryDate)
 
-        public fun bindData(countryModel: CountryModel) {
+        fun bindData(countryModel: CountryModel) {
             tvCountryCode.text = countryModel.countryCode
             tvCountryName.text = countryModel.countryName
             tvCountryDate.text = countryModel.countryDate
@@ -32,7 +33,7 @@ class CountriesAdapter(listCountriesModel: List<CountryModel>) :
         val countryRowItemView: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.country_row_item, parent, false)
 
-        return CountriesViewHolder(countryRowItemView)
+        return CountriesAdapter.CountriesViewHolder(countryRowItemView)
     }
 
     override fun onBindViewHolder(holder: CountriesAdapter.CountriesViewHolder, position: Int) {
@@ -40,6 +41,8 @@ class CountriesAdapter(listCountriesModel: List<CountryModel>) :
     }
 
     override fun getItemCount(): Int {
-        return localListCountriesModel.size
+        return if (localListCountriesModel.isNotEmpty()) {
+            localListCountriesModel.size
+        } else { 0 }
     }
 }
