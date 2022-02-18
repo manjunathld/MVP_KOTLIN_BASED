@@ -1,22 +1,19 @@
 package com.example.mpv_kotlin_based.presenter
 
 import android.util.Log
-import android.view.View
-import com.example.mpv_kotlin_based.MainActivity
 import com.example.mpv_kotlin_based.model.CountriesService
 import com.example.mpv_kotlin_based.model.CountryModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.ArrayList
 
 class CountryPresenter {
 
-    private lateinit var view: View
+    private lateinit var countriesAPICallback: CountriesAPICallback
     private val mCountriesService: CountriesService = CountriesService()
 
-    constructor(view: View) {
-        this.view = view
+    constructor(countriesAPICallback: CountriesAPICallback) {
+        this.countriesAPICallback = countriesAPICallback
         fetchCountries()
     }
 
@@ -28,19 +25,19 @@ class CountryPresenter {
             ) {
                 val data: List<CountryModel>? = response.body()
                 if (data != null) {
-                    view.onResponse(data)
+                    countriesAPICallback.onResponse(data)
                 }
             }
 
             override fun onFailure(call: Call<List<CountryModel>>, t: Throwable) {
                 Log.d("Req onFailure", "")
-                view.onError(t)
+                countriesAPICallback.onError(t)
             }
 
         })
     }
 
-    public interface View {
+    public interface CountriesAPICallback {
         fun onResponse(listCountryModel: List<CountryModel>)
         fun onError(error: Throwable)
     } 

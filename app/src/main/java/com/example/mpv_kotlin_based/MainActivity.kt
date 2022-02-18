@@ -10,7 +10,7 @@ import com.example.mpv_kotlin_based.adapter.CountriesAdapter
 import com.example.mpv_kotlin_based.model.CountryModel
 import com.example.mpv_kotlin_based.presenter.CountryPresenter
 
-class MainActivity : AppCompatActivity(), CountryPresenter.View, CountriesAdapter.CountriesViewHolderListener {
+class MainActivity : AppCompatActivity(), CountryPresenter.CountriesAPICallback, CountriesAdapter.CountriesViewHolderListener {
 
     private lateinit var rvCountries: RecyclerView
     private lateinit var countriesAdapter: CountriesAdapter
